@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MCA - Data Visualization of Compaines in Assam</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+  <meta name="description" content="Registered Companies wih RoC-Shillong under MCA, GoI from the state of Assam mapped with their registered office locations. Interactive filters to check compnay status,company class,company activity, category likewise. Leaflet map based web gis application for Visualization based filters on fly.">
+  <meta name="keywords" content="webgis,gis,leaflet,interactive dashboard, mapping application">
+  <meta name="author" content="Amlan Saikia">
+  <meta HTTP-EQUIV="Pragma" CONTENT="no-cache"> 
+  <meta HTTP-EQUIV="Expires" CONTENT="-1">
+
+  <!-- Dependencies -->
+  <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <!-- Dashboard -->
+  <link rel="stylesheet" type="text/css" href="css/keen-dashboards.css" />
+
+  <!-- Leaflet styles for this template -->
+  <link href="src/leaflet.css" rel="stylesheet">
+  <!--leaflet js-->
+  <script type="text/javascript" src="src/leaflet-src.js"></script>
+  <!--jQuery-->
+  <script type="text/javascript" src="src/jquery-3.3.1.min.js"></script>
+
+  <!--leaflet marker cluster-->
+  <link rel="stylesheet" type="text/css" href="plugins/markercluster/MarkerCluster.Default.css">
+  <!--marker cluster js-->
+  <script type="text/javascript" src="plugins/markercluster/leaflet.markercluster.js"></script>
+
+  <!--dc css styles-->
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/dc@3/dc.css" />
+  <!--d3 js -->
+  <script src="https://unpkg.com/d3@5/dist/d3.js"></script>
+  <!--crossfilter js-->
+  <script src="https://unpkg.com/crossfilter2@1.4/crossfilter.js"></script>
+  <!--dc js-->
+  <script src="https://unpkg.com/dc@3/dc.js"></script>
+  <script type="text/javascript" src="js/underscore-min.js"></script>
+  
+</head>
+<body class="keen-dashboard">
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#"></a>
+    <img src="assets/logo.png" width="60" height="80" class="d-inline-block align-top" alt="">
+    <span class="mb-0 h2">&nbsp; Company Map - Assam</span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto navbar-right">
+        <!--<li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>-->
+      </ul>
+      
+    </div>
+  </nav>
+
+  <div class="container-fluid" style="margin-top: 12px;">
+    <div class="row">
+      <div class="col-sm-2">
+        <div class="chart-wrapper">
+          <div class="chart-stage">
+            <p>Link 2 goes here</p>
+            <p>Link 3 goes here</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-10">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                Location Analysis
+              </div>
+              <div class="chart-stage">
+                <div id="map"></div>
+                <div class="dc-chart" id="chart-cap"></div>
+              </div>
+              <div class="chart-notes">
+                Office Locations
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4 pie-chart">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                <h4>Company Status <small><a id="status">reset</a></small></h4>
+              </div>
+              <div class="chart-stage" style="text-align: center;">
+                <div style="display: inline-block;">
+                  <div class="dc-chart" id="chart-ring-status"></div>
+                </div>
+              </div>
+              <div class="chart-notes">
+                Status of Company
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4 pie-chart">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                <h4>Company Class <small><a id="class">reset</a></small></h4>
+              </div>
+              <div class="chart-stage" style="text-align: center;">
+                <div style="display: inline-block;">
+                  <div class="dc-chart" id="chart-ring-class"></div>
+                </div>
+              </div>
+              <div class="chart-notes">
+                Company Class
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4 pie-chart">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                <h4>Company Activity <small><a id="activity">reset</a></small></h4>
+              </div>
+              <div class="chart-stage" style="text-align: center;">
+                <div style="display: inline-block;">
+                  <div class="dc-chart" id="chart-ring-activity"></div>
+                </div>
+              </div>
+              <div class="chart-notes">
+                Company Activity
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4 pie-chart">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                <h4>Company Category <small><a id="category">reset</a></small></h4>
+              </div>
+              <div class="chart-stage" style="text-align: center;">
+                <div style="display: inline-block;">
+                  <div class="dc-chart" id="chart-ring-category"></div>
+                </div>
+              </div>
+              <div class="chart-notes">
+                Company Category
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                <h4>Company Sub-category <small><a id="subcategory">reset</a></small></h4>
+              </div>
+              <div class="chart-stage" style="text-align: center;">
+                <div style="display: inline-block;">
+                  <div class="dc-chart" id="chart-ring-subcategory"></div>
+                </div>
+              </div>
+              <div class="chart-notes">
+                Company Sub Category
+              </div>
+            </div>
+          </div>
+          <!--<div class="col-sm-4">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                <h4>Company Date of Regn <small><a id="doregn">reset</a></small></h4>
+              </div>
+              <div class="chart-stage" style="text-align: center;">
+                <div style="display: inline-block;">
+                  <div class="dc-chart" id="chart-ring-year"></div>
+                </div>
+              </div>
+              <div class="chart-notes">
+                Company Date of Registration
+              </div>
+            </div>
+          </div>-->
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <p class="small text-muted">Built with <a href="http://iamlan.info">&#9829; </a></p>
+  </div>  
+
+  <!--custom js-->
+  <script type="text/javascript" src="js/app.js"></script>
+
+</body>
+</html>
